@@ -19,6 +19,18 @@ const defaultEditorContent: Descendant[] = [
     type: 'paragraph',
     children: [{text: 'Hello, World!!!'}],
   },
+  {
+    type: 'quote',
+    children: [{text: 'Hello, World!!!'}],
+  },
+  {
+    type: 'list-item',
+    children: [{text: 'Hello, World!!!'}],
+  },
+  {
+    type: 'list-item',
+    children: [{text: 'Second!!!'}],
+  },
 ]
 
 const MyEditor = () => {
@@ -30,14 +42,14 @@ const MyEditor = () => {
   return (
     <div className="h-full flex flex-col">
       <Toolbar editor={editor} state={state}/>
-      <div className="p-5 flex-auto overflow-auto">
+      <div className="p-5 flex-auto flex flex-col overflow-auto">
         <Slate
           editor={editor}
           initialValue={initialValue}
           onChange={handleChange}
         >
           <Editable
-            className="focus:outline-none"
+            className="flex-auto focus:outline-none"
             renderElement={renderElement}
             renderLeaf={renderLeaf}
           />

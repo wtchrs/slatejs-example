@@ -21,6 +21,9 @@ const renderElement = (props: RenderElementProps) => {
         </blockquote>
       )
 
+    case 'list-item':
+      return <li {...props.attributes}>{props.children}</li>
+
     default:
       return <p {...props.attributes}>{props.children}</p>
   }

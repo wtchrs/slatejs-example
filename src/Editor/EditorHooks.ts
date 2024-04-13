@@ -2,24 +2,26 @@ import {useCallback, useState} from 'react'
 import {createEditor, Descendant, Editor, Element as SlateElement} from 'slate'
 import {withReact} from 'slate-react'
 import {withHistory} from 'slate-history'
-import {withCodeBlock} from './plugin.ts'
+import {withCodeBlocks} from './plugin.ts'
 
 export type EditorState = {
-  isMultilineSelected: boolean
+  multilineSelected: boolean
   isBold: boolean
   isCodeBlock: boolean
   isHeading: boolean
   isQuote: boolean
+  isList: boolean
 }
 
 export function useEditor() {
-  const [editor] = useState(() => withReact(withHistory(withCodeBlock(createEditor()))))
+  const [editor] = useState(() => withReact(withHistory(withCodeBlocks(createEditor()))))
   const [state, setState] = useState<EditorState>(() => ({
-    isMultilineSelected: false,
+    multilineSelected: false,
     isBold: false,
     isCodeBlock: false,
     isHeading: false,
     isQuote: false,
+    isList: false,
   }))
 
   const handleChange = useCallback((value: Descendant[]) => {
@@ -29,30 +31,35 @@ export function useEditor() {
       localStorage.setItem('content', content)
     }
 
-    const isMultilineSelected = editor.selection ?
+    const multilineSelected = editor.selection ?
       editor.selection.anchor.path[0] !== editor.selection.focus.path[0] :
       false
 
-    const isBoldActive = Editor.marks(editor)?.bold
+    const isBold = !!Editor.marks(editor)?.bold
 
-    const [isCodeBlockActive] = Editor.nodes(editor, {
+    const [codeMatch] = Editor.nodes(editor, {
       match: n => SlateElement.isElement(n) && n.type === 'code',
     })
 
-    const [isHeadingActive] = Editor.nodes(editor, {
+    const [headingMatch] = Editor.nodes(editor, {
       match: n => SlateElement.isElement(n) && n.type === 'heading',
     })
 
-    const [isQuoteActive] = Editor.nodes(editor, {
+    const [quoteMatch] = Editor.nodes(editor, {
       match: n => SlateElement.isElement(n) && n.type === 'quote',
     })
 
+    const [listMatch] = Editor.nodes(editor, {
+      match: n => SlateElement.isElement(n) && n.type === 'list-item',
+    })
+
     setState({
-      isMultilineSelected,
-      isBold: !!isBoldActive,
-      isCodeBlock: !!isCodeBlockActive,
-      isHeading: !!isHeadingActive,
-      isQuote: !!isQuoteActive,
+      multilineSelected,
+      isBold,
+      isCodeBlock: !!codeMatch,
+      isHeading: !!headingMatch,
+      isQuote: !!quoteMatch,
+      isList: !!listMatch,
     })
   }, [editor])
 

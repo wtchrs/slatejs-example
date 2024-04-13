@@ -1,6 +1,6 @@
 import {CustomEditor} from './CustomTypes'
-import {toggleBoldMark, toggleCodeBlock, toggleHeadingBlock, toggleQuoteBlock} from './EditorHandler'
-import {BiCodeAlt, BiBold, BiHeading, BiSolidQuoteLeft} from 'react-icons/bi'
+import {toggleBoldMark, toggleCodeBlock, toggleHeadingBlock, toggleListItemBlock, toggleQuoteBlock} from './EditorHandler'
+import {BiCodeAlt, BiBold, BiHeading, BiSolidQuoteLeft, BiListUl} from 'react-icons/bi'
 import {EditorState} from './EditorHooks'
 
 type Props = {
@@ -27,6 +27,15 @@ const Toolbar = ({editor, state}: Props) => {
           toggleQuoteBlock(editor, state)
         }}>
         <BiSolidQuoteLeft className="h-5 w-5 m-1"/>
+      </button>
+
+      <button
+        className={'m-1 p-0 justify-center hover:bg-slate-200' + (state.isList ? ' bg-slate-200' : '')}
+        onMouseDown={(event) => {
+          event.preventDefault()
+          toggleListItemBlock(editor, state)
+        }}>
+        <BiListUl className="h-5 w-5 m-1"/>
       </button>
 
       <button

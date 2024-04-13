@@ -23,14 +23,12 @@ export type QuoteElement = {
   children: CustomText[]
 }
 
-export type ListElement = {
-  type: 'list'
+export type ListItemElement = {
+  type: 'list-item'
   children: CustomText[]
 }
 
-export type TextElement = ParagraphElement | HeadingElement | CodeElement | QuoteElement | ListElement
-
-export type CustomElement = TextElement
+export type CustomElement = ParagraphElement | HeadingElement | CodeElement | QuoteElement | ListItemElement
 
 export type FormattedText = {
   text: string

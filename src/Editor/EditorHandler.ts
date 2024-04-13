@@ -1,4 +1,4 @@
-import {CodeElement, CustomEditor, ParagraphElement} from './CustomTypes.ts'
+import {CodeElement, CustomEditor, CustomElement, ParagraphElement} from './CustomTypes.ts'
 import {Editor, Element as SlateElement, Node, Range, Transforms} from 'slate'
 import {EditorState} from './EditorHooks.ts'
 
@@ -14,7 +14,7 @@ export function toggleHeadingBlock(editor: CustomEditor, {isHeading}: EditorStat
   Transforms.setNodes(
     editor,
     {type: isHeading ? 'paragraph' : 'heading'},
-    {match: n => SlateElement.isElement(n) && n.type !== 'code'}
+    {match: n => SlateElement.isElement(n) && n.type !== 'code'},
   )
 }
 
@@ -22,19 +22,43 @@ export function toggleQuoteBlock(editor: CustomEditor, {isQuote}: EditorState) {
   Transforms.setNodes(
     editor,
     {type: isQuote ? 'paragraph' : 'quote'},
-    {match: n => SlateElement.isElement(n) && n.type !== 'code'}
+    {match: n => SlateElement.isElement(n) && n.type !== 'code'},
   )
+}
+
+export function toggleListItemBlock(editor: CustomEditor, {isList}: EditorState) {
+  const {selection} = editor
+  if (!selection) return
+
+  if (isList) {
+    // const listElement = Editor.above(editor, {
+    //   at: editor.selection as Range,
+    //   match: n => SlateElement.isElement(n) && n.type === 'list'
+    // })
+    // Transforms.unwrapNodes(editor, {match: n => SlateElement.isElement(n) && n.type === 'list'})
+    Transforms.setNodes(
+      editor,
+      {type: 'paragraph'},
+      {match: n => SlateElement.isElement(n) && n.type === 'list-item'},
+    )
+  } else {
+    Transforms.setNodes(
+      editor,
+      {type: 'list-item'},
+      {match: n => SlateElement.isElement(n) && n.type !== 'code'},
+    )
+  }
 }
 
 export function toggleCodeBlock(editor: CustomEditor, {isCodeBlock}: EditorState) {
   if (isCodeBlock) {
-    enableCodeBlock(editor)
-  } else {
     disableCodeBlock(editor)
+  } else {
+    enableCodeBlock(editor)
   }
 }
 
-function enableCodeBlock(editor: CustomEditor) {
+function disableCodeBlock(editor: CustomEditor) {
   const [[codeBlock, path]] = Editor.nodes(editor, {
     at: editor.selection as Range,
     match: n => SlateElement.isElement(n) && n.type === 'code',
@@ -51,7 +75,7 @@ function enableCodeBlock(editor: CustomEditor) {
   Transforms.insertNodes(editor, paragraphs, {at: path})
 }
 
-function disableCodeBlock(editor: CustomEditor) {
+function enableCodeBlock(editor: CustomEditor) {
   const selectedNodes = Array.from(
     Editor.nodes(editor, {
       at: editor.selection as Range,
@@ -67,7 +91,7 @@ function disableCodeBlock(editor: CustomEditor) {
   }
 
   if (selectedNodes.length > 0) {
-    const texts = selectedNodes.map(([node]) => (node as SlateElement).children.map((n) => n.text).join())
+    const texts = selectedNodes.map(([node]) => (node as CustomElement).children.map((n) => n.text).join())
     newCodeElement.children[0].text = texts.join('\n')
     console.log(newCodeElement.children[0].text)
     Transforms.removeNodes(editor, {at: editor.selection as Range})
