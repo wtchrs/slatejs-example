@@ -44,9 +44,12 @@ export const CustomElementType: Readonly<Record<CustomElementTypeKey, CustomElem
 }
 
 export type FormatKey = RemoveDash<Format>
-export type Format = 'bold'
+export type Format = 'bold' | 'italic' | 'underline' | 'line-through'
 export const Format: Readonly<Record<FormatKey, Format>> = {
   bold: 'bold',
+  italic: 'italic',
+  underline: 'underline',
+  lineThrough: 'line-through',
 }
 
 export type FormattedText =

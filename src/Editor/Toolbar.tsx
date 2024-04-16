@@ -6,6 +6,9 @@ import {
   BiHeading,
   BiSolidQuoteLeft,
   BiListUl,
+  BiItalic,
+  BiUnderline,
+  BiStrikethrough,
 } from 'react-icons/bi'
 import {EditorState} from './EditorHooks'
 
@@ -62,6 +65,33 @@ const Toolbar = ({editor, state}: Props) => {
           toggleMark(editor, state, Format.bold)
         }}>
         <BiBold className="h-5 w-5 m-1"/>
+      </button>
+
+      <button
+        className={state.italic ? ' bg-slate-200' : ''}
+        onMouseDown={(event) => {
+          event.preventDefault()
+          toggleMark(editor, state, 'italic')
+        }}>
+        <BiItalic className="h-5 w-5 m-1"/>
+      </button>
+
+      <button
+        className={state.underline ? ' bg-slate-200' : ''}
+        onMouseDown={(event) => {
+          event.preventDefault()
+          toggleMark(editor, state, 'underline')
+        }}>
+        <BiUnderline className="h-5 w-5 m-1"/>
+      </button>
+
+      <button
+        className={state[Format.lineThrough] ? ' bg-slate-200' : ''}
+        onMouseDown={(event) => {
+          event.preventDefault()
+          toggleMark(editor, state, 'line-through')
+        }}>
+        <BiStrikethrough  className="h-5 w-5 m-1"/>
       </button>
     </div>
   )

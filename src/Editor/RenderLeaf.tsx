@@ -3,6 +3,9 @@ import {Format} from './CustomTypes.ts'
 
 const formatToClassName = {
   [Format.bold]: 'font-bold',
+  [Format.italic]: 'italic',
+  [Format.underline]: 'underline',
+  [Format.lineThrough]: 'line-through',
 }
 
 const renderLeaf = (props: RenderLeafProps) => {
