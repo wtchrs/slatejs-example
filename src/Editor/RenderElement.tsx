@@ -1,11 +1,12 @@
 import {RenderElementProps} from 'slate-react'
+import {CustomElementType} from './CustomTypes.ts'
 
 const renderElement = (props: RenderElementProps) => {
   switch (props.element.type) {
-    case 'heading':
+    case CustomElementType.heading:
       return <h2 {...props.attributes}>{props.children}</h2>
 
-    case 'code':
+    case CustomElementType.code:
       return (
         <pre>
           <code {...props.attributes}>
@@ -14,14 +15,14 @@ const renderElement = (props: RenderElementProps) => {
         </pre>
       )
 
-    case 'quote':
+    case CustomElementType.quote:
       return (
         <blockquote {...props.attributes}>
           {props.children}
         </blockquote>
       )
 
-    case 'list-item':
+    case CustomElementType.listItem:
       return <li {...props.attributes}>{props.children}</li>
 
     default:

@@ -1,57 +1,27 @@
-import {CodeElement, CustomEditor, CustomElement, ParagraphElement} from './CustomTypes.ts'
+import {CodeElement, CustomEditor, CustomElement, CustomElementType, Format} from './CustomTypes.ts'
 import {Editor, Element as SlateElement, Node, Range, Transforms} from 'slate'
 import {EditorState} from './EditorHooks.ts'
 
-export function toggleBoldMark(editor: CustomEditor, {isBold}: EditorState) {
-  if (isBold) {
-    Editor.removeMark(editor, 'bold')
+export function toggleMark(editor: CustomEditor, state: EditorState, format: Format) {
+  if (state[format]) {
+    Editor.removeMark(editor, format)
   } else {
-    Editor.addMark(editor, 'bold', true)
+    Editor.addMark(editor, format, true)
   }
 }
 
-export function toggleHeadingBlock(editor: CustomEditor, {isHeading}: EditorState) {
+export function toggleBlock(editor: CustomEditor, state: EditorState, type: CustomElementType) {
+  const isActive = state[type]
+
   Transforms.setNodes(
     editor,
-    {type: isHeading ? 'paragraph' : 'heading'},
-    {match: n => SlateElement.isElement(n) && n.type !== 'code'},
+    {type: isActive ? CustomElementType.paragraph : type},
+    {match: n => SlateElement.isElement(n) && n.type !== CustomElementType.code},
   )
 }
 
-export function toggleQuoteBlock(editor: CustomEditor, {isQuote}: EditorState) {
-  Transforms.setNodes(
-    editor,
-    {type: isQuote ? 'paragraph' : 'quote'},
-    {match: n => SlateElement.isElement(n) && n.type !== 'code'},
-  )
-}
-
-export function toggleListItemBlock(editor: CustomEditor, {isList}: EditorState) {
-  const {selection} = editor
-  if (!selection) return
-
-  if (isList) {
-    // const listElement = Editor.above(editor, {
-    //   at: editor.selection as Range,
-    //   match: n => SlateElement.isElement(n) && n.type === 'list'
-    // })
-    // Transforms.unwrapNodes(editor, {match: n => SlateElement.isElement(n) && n.type === 'list'})
-    Transforms.setNodes(
-      editor,
-      {type: 'paragraph'},
-      {match: n => SlateElement.isElement(n) && n.type === 'list-item'},
-    )
-  } else {
-    Transforms.setNodes(
-      editor,
-      {type: 'list-item'},
-      {match: n => SlateElement.isElement(n) && n.type !== 'code'},
-    )
-  }
-}
-
-export function toggleCodeBlock(editor: CustomEditor, {isCodeBlock}: EditorState) {
-  if (isCodeBlock) {
+export function toggleCodeBlock(editor: CustomEditor, {code}: EditorState) {
+  if (code) {
     disableCodeBlock(editor)
   } else {
     enableCodeBlock(editor)
@@ -61,16 +31,16 @@ export function toggleCodeBlock(editor: CustomEditor, {isCodeBlock}: EditorState
 function disableCodeBlock(editor: CustomEditor) {
   const [[codeBlock, path]] = Editor.nodes(editor, {
     at: editor.selection as Range,
-    match: n => SlateElement.isElement(n) && n.type === 'code',
+    match: n => SlateElement.isElement(n) && n.type === CustomElementType.code,
   })
 
   Transforms.removeNodes(editor, {
     at: path,
-    match: n => SlateElement.isElement(n) && n.type === 'code',
+    match: n => SlateElement.isElement(n) && n.type === CustomElementType.code,
   })
 
   const lines = (codeBlock as CodeElement).children[0].text.split('\n')
-  const paragraphs: ParagraphElement[] = lines.map(line => ({type: 'paragraph', children: [{text: line}]}))
+  const paragraphs = lines.map(line => ({type: CustomElementType.paragraph, children: [{text: line}]}))
 
   Transforms.insertNodes(editor, paragraphs, {at: path})
 }
@@ -86,7 +56,7 @@ function enableCodeBlock(editor: CustomEditor) {
   const start = selectedNodes[0][1]
 
   const newCodeElement: SlateElement = {
-    type: 'code',
+    type: CustomElementType.code,
     children: [{text: ''}],
   }
 

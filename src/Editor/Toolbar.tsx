@@ -1,6 +1,12 @@
-import {CustomEditor} from './CustomTypes'
-import {toggleBoldMark, toggleCodeBlock, toggleHeadingBlock, toggleListItemBlock, toggleQuoteBlock} from './EditorHandler'
-import {BiCodeAlt, BiBold, BiHeading, BiSolidQuoteLeft, BiListUl} from 'react-icons/bi'
+import {CustomEditor, CustomElementType, Format} from './CustomTypes'
+import {toggleMark, toggleBlock, toggleCodeBlock} from './EditorHandler'
+import {
+  BiCodeAlt,
+  BiBold,
+  BiHeading,
+  BiSolidQuoteLeft,
+  BiListUl,
+} from 'react-icons/bi'
 import {EditorState} from './EditorHooks'
 
 type Props = {
@@ -10,36 +16,36 @@ type Props = {
 
 const Toolbar = ({editor, state}: Props) => {
   return (
-    <div className="border-b-2 bg-slate-50">
+    <div className="toolbar border-b-2 px-2 bg-slate-50 flex">
       <button
-        className={'m-1 p-0 justify-center hover:bg-slate-200' + (state.isHeading ? ' bg-slate-200' : '')}
+        className={state.heading ? ' bg-slate-200' : ''}
         onMouseDown={(event) => {
           event.preventDefault()
-          toggleHeadingBlock(editor, state)
+          toggleBlock(editor, state, CustomElementType.heading)
         }}>
         <BiHeading className="h-5 w-5 m-1"/>
       </button>
 
       <button
-        className={'m-1 p-0 justify-center hover:bg-slate-200' + (state.isQuote ? ' bg-slate-200' : '')}
+        className={state.quote ? ' bg-slate-200' : ''}
         onMouseDown={(event) => {
           event.preventDefault()
-          toggleQuoteBlock(editor, state)
+          toggleBlock(editor, state, CustomElementType.quote)
         }}>
         <BiSolidQuoteLeft className="h-5 w-5 m-1"/>
       </button>
 
       <button
-        className={'m-1 p-0 justify-center hover:bg-slate-200' + (state.isList ? ' bg-slate-200' : '')}
+        className={state[CustomElementType.listItem] ? ' bg-slate-200' : ''}
         onMouseDown={(event) => {
           event.preventDefault()
-          toggleListItemBlock(editor, state)
+          toggleBlock(editor, state, CustomElementType.listItem)
         }}>
         <BiListUl className="h-5 w-5 m-1"/>
       </button>
 
       <button
-        className={'m-1 p-0 justify-center hover:bg-slate-200' + (state.isCodeBlock ? ' bg-slate-200' : '')}
+        className={state.code ? ' bg-slate-200' : ''}
         onMouseDown={(event) => {
           event.preventDefault()
           toggleCodeBlock(editor, state)
@@ -47,11 +53,13 @@ const Toolbar = ({editor, state}: Props) => {
         <BiCodeAlt className="h-5 w-5 m-1"/>
       </button>
 
+      <div className="border-l-2 h-full mx-2"></div>
+
       <button
-        className={'m-1 p-0 justify-center hover:bg-slate-200' + (state.isBold ? ' bg-slate-200' : '')}
+        className={state.bold ? ' bg-slate-200' : ''}
         onMouseDown={(event) => {
           event.preventDefault()
-          toggleBoldMark(editor, state)
+          toggleMark(editor, state, Format.bold)
         }}>
         <BiBold className="h-5 w-5 m-1"/>
       </button>

@@ -31,3 +31,13 @@
     @apply mt-4 mb-2 p-4 bg-gray-100 border-l-4 border-gray-400 italic;
   }
 }
+
+@layer components {
+  .toolbar > button {
+    @apply m-1 p-0 justify-center hover:bg-slate-200;
+  }
+
+  .underline.line-through {
+    text-decoration: underline line-through;
+  }
+}
