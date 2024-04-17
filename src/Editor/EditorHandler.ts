@@ -1,4 +1,4 @@
-import {CodeElement, CustomEditor, CustomElement, CustomElementType, Format} from './CustomTypes.ts'
+import {CodeElement, CustomEditor, CustomElementType, Format} from './CustomTypes.ts'
 import {Editor, Element as SlateElement, Node, Range, Transforms} from 'slate'
 import {EditorState} from './EditorHooks.ts'
 
@@ -40,7 +40,7 @@ function disableCodeBlock(editor: CustomEditor) {
   })
 
   const lines = (codeBlock as CodeElement).children[0].text.split('\n')
-  const paragraphs = lines.map(line => ({type: CustomElementType.paragraph, children: [{text: line}]}))
+  const paragraphs = lines.map(line => ({type: 'paragraph', children: [{text: line}]} as SlateElement))
 
   Transforms.insertNodes(editor, paragraphs, {at: path})
 }
@@ -55,13 +55,13 @@ function enableCodeBlock(editor: CustomEditor) {
 
   const start = selectedNodes[0][1]
 
-  const newCodeElement: SlateElement = {
-    type: CustomElementType.code,
+  const newCodeElement = {
+    type: 'code',
     children: [{text: ''}],
-  }
+  } as SlateElement
 
   if (selectedNodes.length > 0) {
-    const texts = selectedNodes.map(([node]) => (node as CustomElement).children.map((n) => n.text).join())
+    const texts = selectedNodes.map(([node]) => (node as SlateElement).children.map((n) => n.text).join())
     newCodeElement.children[0].text = texts.join('\n')
     console.log(newCodeElement.children[0].text)
     Transforms.removeNodes(editor, {at: editor.selection as Range})

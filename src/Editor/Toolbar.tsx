@@ -24,7 +24,7 @@ const Toolbar = ({editor, state}: Props) => {
         className={state.heading ? ' bg-slate-200' : ''}
         onMouseDown={(event) => {
           event.preventDefault()
-          toggleBlock(editor, state, CustomElementType.heading)
+          toggleBlock(editor, state, 'heading')
         }}>
         <BiHeading className="h-5 w-5 m-1"/>
       </button>
@@ -39,10 +39,10 @@ const Toolbar = ({editor, state}: Props) => {
       </button>
 
       <button
-        className={state[CustomElementType.listItem] ? ' bg-slate-200' : ''}
+        className={state['list-item'] ? ' bg-slate-200' : ''}
         onMouseDown={(event) => {
           event.preventDefault()
-          toggleBlock(editor, state, CustomElementType.listItem)
+          toggleBlock(editor, state, 'list-item')
         }}>
         <BiListUl className="h-5 w-5 m-1"/>
       </button>
@@ -62,7 +62,7 @@ const Toolbar = ({editor, state}: Props) => {
         className={state.bold ? ' bg-slate-200' : ''}
         onMouseDown={(event) => {
           event.preventDefault()
-          toggleMark(editor, state, Format.bold)
+          toggleMark(editor, state, 'bold')
         }}>
         <BiBold className="h-5 w-5 m-1"/>
       </button>
