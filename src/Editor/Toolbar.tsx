@@ -1,4 +1,4 @@
-import {CustomEditor, CustomElementType, Format} from './CustomTypes'
+import {CustomElementType, Format} from './CustomTypes'
 import {toggleMark, toggleBlock, toggleCodeBlock} from './EditorHandler'
 import {
   BiCodeAlt,
@@ -9,15 +9,19 @@ import {
   BiItalic,
   BiUnderline,
   BiStrikethrough,
+  BiImageAdd,
 } from 'react-icons/bi'
 import {EditorState} from './EditorHooks'
+import {useSlate} from 'slate-react'
 
 type Props = {
-  editor: CustomEditor
   state: EditorState
+  setDialogOpen: (b: boolean) => void
 }
 
-const Toolbar = ({editor, state}: Props) => {
+const Toolbar = ({state, setDialogOpen}: Props) => {
+  const editor = useSlate()
+
   return (
     <div className="toolbar border-b-2 px-2 bg-slate-50 flex">
       <button
@@ -91,7 +95,17 @@ const Toolbar = ({editor, state}: Props) => {
           event.preventDefault()
           toggleMark(editor, state, 'line-through')
         }}>
-        <BiStrikethrough  className="h-5 w-5 m-1"/>
+        <BiStrikethrough className="h-5 w-5 m-1"/>
+      </button>
+
+      <div className="border-l-2 h-full mx-2"></div>
+
+      <button
+        onMouseDown={(event) => {
+          event.preventDefault()
+          setDialogOpen(true)
+        }}>
+        <BiImageAdd className="h-5 w-5 m-1"/>
       </button>
     </div>
   )

@@ -2,8 +2,8 @@ import {useCallback, useState} from 'react'
 import {createEditor, Descendant, Editor, Element as SlateElement} from 'slate'
 import {withReact} from 'slate-react'
 import {withHistory} from 'slate-history'
-import {CustomElementType, Format} from './CustomTypes.ts'
 import {withCodeBlocks} from './plugin.ts'
+import {CustomElementType, Format} from './CustomTypes.ts'
 
 export type ElementState = {
   [type in CustomElementType]: boolean

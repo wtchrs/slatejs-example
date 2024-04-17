@@ -1,5 +1,6 @@
 import {RenderElementProps} from 'slate-react'
 import {CustomElementType} from './CustomTypes.ts'
+import EditorImageElement from './image/EditorImageElement.tsx'
 
 const renderElement = (props: RenderElementProps) => {
   switch (props.element.type) {
@@ -16,14 +17,14 @@ const renderElement = (props: RenderElementProps) => {
       )
 
     case CustomElementType.quote:
-      return (
-        <blockquote {...props.attributes}>
-          {props.children}
-        </blockquote>
-      )
+      return <blockquote {...props.attributes}>{props.children}</blockquote>
 
     case CustomElementType.listItem:
       return <li {...props.attributes}>{props.children}</li>
+
+    case CustomElementType.image: {
+      return <EditorImageElement {...props}>{props.children}</EditorImageElement>
+    }
 
     default:
       return <p {...props.attributes}>{props.children}</p>

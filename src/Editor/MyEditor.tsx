@@ -1,10 +1,11 @@
-import {useMemo} from 'react'
+import {useMemo, useState} from 'react'
 import {Descendant} from 'slate'
 import {Editable, Slate} from 'slate-react'
-import renderElement from './RenderElement'
-import renderLeaf from './RenderLeaf'
+import renderElement from './renderElement.tsx'
+import renderLeaf from './renderLeaf.tsx'
 import Toolbar from './Toolbar'
 import {useEditor} from './EditorHooks'
+import AddImageDialog from './image/AddImageDialog.tsx'
 
 const defaultEditorContent: Descendant[] = [
   {
@@ -36,26 +37,31 @@ const defaultEditorContent: Descendant[] = [
 const MyEditor = () => {
   const {editor, state, handleChange} = useEditor()
 
+  const [isDialogOpen, setDialogOpen] = useState(false)
+
   const content = localStorage.getItem('content')
   const initialValue = useMemo(() => content ? JSON.parse(content) : defaultEditorContent, [content])
 
   return (
-    <div className="h-full flex flex-col">
-      <Toolbar editor={editor} state={state}/>
-      <div className="p-5 flex-auto flex flex-col overflow-auto">
-        <Slate
-          editor={editor}
-          initialValue={initialValue}
-          onChange={handleChange}
-        >
+    <Slate
+      editor={editor}
+      initialValue={initialValue}
+      onChange={handleChange}
+    >
+      <div className="h-full flex flex-col">
+        <Toolbar state={state} setDialogOpen={setDialogOpen}/>
+
+        <div className="p-5 flex-auto flex flex-col overflow-auto">
           <Editable
             className="flex-auto focus:outline-none"
             renderElement={renderElement}
             renderLeaf={renderLeaf}
           />
-        </Slate>
+        </div>
       </div>
-    </div>
+
+      <AddImageDialog isDialogOpen={isDialogOpen} handleClose={() => setDialogOpen(false)}/>
+    </Slate>
   )
 }
 

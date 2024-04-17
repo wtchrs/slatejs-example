@@ -31,20 +31,29 @@ export type ListItemElement = {
   children: CustomText[]
 }
 
-export type CustomElement = ParagraphElement | HeadingElement | CodeElement | QuoteElement | ListItemElement
+export type ImageElement = {
+  type: 'image'
+  url: string
+  alt: string
+  children: CustomText[]
+}
 
-export type CustomElementTypeKey = RemoveDash<CustomElementType>
+export type TextElement = ParagraphElement | HeadingElement | CodeElement | QuoteElement | ListItemElement
+export type CustomElement = TextElement | ImageElement
+
 export type CustomElementType = CustomElement['type']
+export type CustomElementTypeKey = RemoveDash<CustomElementType>
 export const CustomElementType: Readonly<Record<CustomElementTypeKey, CustomElementType>> = {
   paragraph: 'paragraph',
   heading: 'heading',
   code: 'code',
   quote: 'quote',
   listItem: 'list-item',
+  image: 'image',
 }
 
-export type FormatKey = RemoveDash<Format>
 export type Format = 'bold' | 'italic' | 'underline' | 'line-through'
+export type FormatKey = RemoveDash<Format>
 export const Format: Readonly<Record<FormatKey, Format>> = {
   bold: 'bold',
   italic: 'italic',
