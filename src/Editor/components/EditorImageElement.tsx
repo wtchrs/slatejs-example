@@ -3,7 +3,7 @@ import {useCallback} from 'react'
 import {ImageElement} from '../CustomTypes.ts'
 import {Transforms} from 'slate'
 
-const EditorImageElement = ({attributes, element}: RenderElementProps) => {
+const EditorImageElement = ({attributes, element, children}: RenderElementProps) => {
   const editor = useSlate()
 
   const handleDelete = useCallback(() => {
@@ -15,17 +15,20 @@ const EditorImageElement = ({attributes, element}: RenderElementProps) => {
 
   return (
     <div {...attributes} className="relative">
-      <img
-        className="w-full h-auto loading-skeleton"
-        src={imageElement.url}
-        alt={imageElement.alt}
-      />
-      <button
-        className="absolute top-2 right-2 bg-gray-800 text-white px-2 py-1 rounded"
-        onMouseDown={handleDelete}
-      >
-        Delete
-      </button>
+      <div contentEditable={false}>
+        <img
+          className="w-full h-auto loading-skeleton"
+          src={imageElement.url}
+          alt={imageElement.alt}
+        />
+        <button
+          className="absolute top-2 right-2 bg-gray-800 text-white px-2 py-1 rounded"
+          onMouseDown={handleDelete}
+        >
+          Delete
+        </button>
+        {children}
+      </div>
     </div>
   )
 }

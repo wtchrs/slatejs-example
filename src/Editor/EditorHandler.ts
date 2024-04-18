@@ -63,9 +63,23 @@ function enableCodeBlock(editor: CustomEditor) {
   if (selectedNodes.length > 0) {
     const texts = selectedNodes.map(([node]) => (node as SlateElement).children.map((n) => n.text).join())
     newCodeElement.children[0].text = texts.join('\n')
-    console.log(newCodeElement.children[0].text)
     Transforms.removeNodes(editor, {at: editor.selection as Range})
   }
 
   Transforms.insertNodes(editor, newCodeElement, {at: start})
+}
+
+export function handleBackspace(editor: CustomEditor, state: EditorState) {
+  const {selection} = editor
+  const {paragraph, code} = state
+
+  if (selection && Range.isCollapsed(selection)  && !paragraph && !code) {
+    const {offset, path} = selection.anchor
+    if (offset === 0 && path[1] === 0) {
+      Transforms.setNodes(editor, {type: CustomElementType.paragraph})
+      return
+    }
+  }
+
+  Transforms.delete(editor, {reverse: true, unit: 'character'})
 }

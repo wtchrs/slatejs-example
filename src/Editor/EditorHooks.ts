@@ -2,7 +2,7 @@ import {useCallback, useState} from 'react'
 import {createEditor, Descendant, Editor, Element as SlateElement} from 'slate'
 import {withReact} from 'slate-react'
 import {withHistory} from 'slate-history'
-import {withCodeBlocks} from './plugin.ts'
+import {withCodeBlocks, withImages} from './plugin.ts'
 import {CustomElementType, Format} from './CustomTypes.ts'
 
 export type ElementState = {
@@ -49,7 +49,6 @@ function getElementState(editor: Editor) {
 
 function getLeafState(editor: Editor) {
   const marks = Editor.marks(editor)
-  console.log(marks)
   return Object.values(Format)
     .reduce((acc, format) => {
       acc[format as Format] = Boolean(marks?.[format as Format])
@@ -58,7 +57,7 @@ function getLeafState(editor: Editor) {
 }
 
 export function useEditor() {
-  const [editor] = useState(() => withReact(withHistory(withCodeBlocks(createEditor()))))
+  const [editor] = useState(() => withReact(withHistory(withCodeBlocks(withImages(createEditor())))))
   const [state, setState] = useState<EditorState>(getInitialValue)
 
   const handleChange = useCallback((value: Descendant[]) => {

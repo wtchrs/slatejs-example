@@ -1,11 +1,12 @@
 import {useMemo, useState} from 'react'
 import {Descendant} from 'slate'
 import {Editable, Slate} from 'slate-react'
-import renderElement from './renderElement.tsx'
+import renderEditorElement from './renderEditorElement.tsx'
 import renderLeaf from './renderLeaf.tsx'
 import Toolbar from './Toolbar'
 import {useEditor} from './EditorHooks'
-import AddImageDialog from './image/AddImageDialog.tsx'
+import AddImageDialog from './components/AddImageDialog.tsx'
+import {handleBackspace} from './EditorHandler.ts'
 
 const defaultEditorContent: Descendant[] = [
   {
@@ -51,10 +52,16 @@ const MyEditor = () => {
       <div className="h-full flex flex-col">
         <Toolbar state={state} setDialogOpen={setDialogOpen}/>
 
-        <div className="p-5 flex-auto flex flex-col overflow-auto">
+        <div className="py-5 flex-auto flex flex-col overflow-auto">
           <Editable
             className="flex-auto focus:outline-none"
-            renderElement={renderElement}
+            onKeyDown={event => {
+              if (event.key === 'Backspace') {
+                event.preventDefault()
+                handleBackspace(editor, state)
+              }
+            }}
+            renderElement={renderEditorElement}
             renderLeaf={renderLeaf}
           />
         </div>
