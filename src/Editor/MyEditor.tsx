@@ -1,12 +1,13 @@
-import {useMemo, useState} from 'react'
+import {useCallback, useMemo, useState, KeyboardEvent} from 'react'
 import {Descendant} from 'slate'
 import {Editable, Slate} from 'slate-react'
 import renderEditorElement from './renderEditorElement.tsx'
 import renderLeaf from './renderLeaf.tsx'
 import Toolbar from './Toolbar'
-import {useEditor} from './EditorHooks'
+import {EditorState, useEditor} from './EditorHooks'
 import AddImageDialog from './components/AddImageDialog.tsx'
 import {handleBackspace} from './EditorHandler.ts'
+import {CustomEditor} from './CustomTypes.ts'
 
 const defaultEditorContent: Descendant[] = [
   {
@@ -43,6 +44,13 @@ const MyEditor = () => {
   const content = localStorage.getItem('content')
   const initialValue = useMemo(() => content ? JSON.parse(content) : defaultEditorContent, [content])
 
+  const handleKeyDown = useCallback((event: KeyboardEvent, editor: CustomEditor, state: EditorState) => {
+    if (event.key === 'Backspace') {
+      event.preventDefault()
+      handleBackspace(editor, state)
+    }
+  }, [])
+
   return (
     <Slate
       editor={editor}
@@ -55,12 +63,7 @@ const MyEditor = () => {
         <div className="py-5 flex-auto flex flex-col overflow-auto">
           <Editable
             className="flex-auto focus:outline-none"
-            onKeyDown={event => {
-              if (event.key === 'Backspace') {
-                event.preventDefault()
-                handleBackspace(editor, state)
-              }
-            }}
+            onKeyDown={event => handleKeyDown(event, editor, state)}
             renderElement={renderEditorElement}
             renderLeaf={renderLeaf}
           />

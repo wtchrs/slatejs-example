@@ -73,11 +73,40 @@ export function handleBackspace(editor: CustomEditor, state: EditorState) {
   const {selection} = editor
   const {paragraph, code} = state
 
-  if (selection && Range.isCollapsed(selection)  && !paragraph && !code) {
+  if (selection && Range.isCollapsed(selection) && !paragraph && !code) {
+    // Change the type of the current node to paragraph if the cursor is at the beginning of the editor
     const {offset, path} = selection.anchor
     if (offset === 0 && path[1] === 0) {
       Transforms.setNodes(editor, {type: CustomElementType.paragraph})
       return
+    }
+  }
+
+  if (
+    selection && Range.isCollapsed(selection) &&
+    selection.anchor.offset === 0 && selection.anchor.path.length === 2 && selection.anchor.path[1] === 0
+  ) {
+    // Delete the current element if the before element is image and the current element is empty
+    const before = Editor.before(editor, selection, {unit: 'character'})
+    console.log('before: ', before)
+
+    if (before && before.offset === 0 && before.path.length == 2 && before.path[1] === 0) {
+      const [beforeMatch] = Editor.nodes(editor, {
+        at: before,
+        match: n => SlateElement.isElement(n) && n.type === CustomElementType.image,
+      })
+      console.log('beforeMatch: ', beforeMatch)
+      if (beforeMatch) {
+        const [match] = Editor.nodes(editor, {at: selection, match: n => SlateElement.isElement(n)})
+        const [node] = match
+        console.log('node: ', node)
+        if (node && SlateElement.isElement(node) && node.children.length === 1 && node.children[0].text === '') {
+          console.log('delete')
+          Transforms.delete(editor, {at: selection, unit: 'block'})
+        }
+        console.log('return')
+        return
+      }
     }
   }
 
