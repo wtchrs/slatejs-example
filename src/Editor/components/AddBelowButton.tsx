@@ -31,7 +31,7 @@ const AddBelowButton = ({element, children}: Props) => {
   }, [editor, element])
 
   return (
-    <div className="relative z-0 px-10 group/new-button">
+    <div className="relative px-10 group/new-button">
       <div className="group/tooltip">
         <button
           className="absolute left-1 top-2 hover:bg-gray-200 text-gray-400 px-2 py-1 rounded transition-opacity opacity-0 group-hover/new-button:opacity-100"
@@ -40,7 +40,7 @@ const AddBelowButton = ({element, children}: Props) => {
           <BiPlus/>
         </button>
         <div
-          className="absolute z-10 left-1 top-9 py-1 px-2 bg-black text-white rounded transition-opacity opacity-0 hidden group-hover/tooltip:opacity-100 group-hover/tooltip:block">
+          className="absolute z-10 left-1 top-9 py-1 px-2 bg-black text-white rounded transition-opacity opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible">
           Click to add below
         </div>
       </div>
